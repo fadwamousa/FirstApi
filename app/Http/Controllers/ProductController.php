@@ -14,13 +14,16 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return  ProductResource::collection(Product::all());
+
+        return  Product::all();
+        //return  ProductResource::collection(Product::all());
+
         //return new ProductResource(Product::all());
     }
 
     public function show(Product $product)
     {
-        return $product;
+        return new ProductResource($product);
     }
 
     public function store(Request $request)
