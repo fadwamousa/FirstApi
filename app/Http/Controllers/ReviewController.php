@@ -38,11 +38,25 @@ class ReviewController extends Controller
         //
     }
 
+    public function ProductUserCheck($review){
+
+        if(\Auth::id() !== $review->id){
+
+            return "no review belongs to this user";
+            
+        }
+    }
     
-    
-    public function update(Request $request, Review $review)
+    public function update(ReviewRequest $request,$id)
     {
-        //
+       // $this->ProductUserCheck($review);
+        $review = Review::find($id);
+        $review->update($request->all());
+        //$product->reviews()->save($review);
+
+        return apiResponse(1,'Updated Review',
+            [ 'data' => new ReviewResource($review)],201
+        );
     }
 
     /**
@@ -51,8 +65,11 @@ class ReviewController extends Controller
      * @param  \App\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Review $review)
+    public function destroy($id)
     {
-        //
+        //$this->ProductUserCheck($review);
+        $review = Review::find($id);
+        $review->delete();
+        return apiResponse(1,'Deleted-Review');
     }
 }

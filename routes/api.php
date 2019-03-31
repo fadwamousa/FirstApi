@@ -15,5 +15,6 @@ Route::group(['prefix'=>'products'],function(){
 	Route::apiResource('{product}/reviews','ReviewController');
 
 });
+
 //localhost/FirstApi_product/products
 //localhost/FirstApi_product/products/12/reviews
