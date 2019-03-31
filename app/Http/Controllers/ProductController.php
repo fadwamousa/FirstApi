@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Http\Request;
-
+use App\Exceptions\ProductNotBelongsToUser;
 use App\Http\Requests\ProductRequest;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductCollection;
@@ -44,10 +44,20 @@ class ProductController extends Controller
        // return response()->json(['data' => new ProductResource($product)],Response::HTTP_CREATED);
     }
 
+    public function ProductUserCheck($product){
+
+        if(\Auth::id() !== $product->user_id){
+
+            throw new ProductNotBelongsToUser;
+            
+        }
+    }
+
     
 
     public function update(ProductRequest $request,Product $product)
     {
+       $this->ProductUserCheck($product);
        $product->update($request->all());
        return apiResponse(1,'Updated',['data' => new ProductResource($product)],201);
 
@@ -60,7 +70,8 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Product $product)
-    {
+    {   
+        $this->ProductUserCheck($product);
         $product->delete();
         return apiResponse(1,'Deleted-Data');
 
