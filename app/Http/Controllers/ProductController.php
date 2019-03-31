@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Product;
 use Illuminate\Http\Request;
+
+use App\Http\Requests\ProductRequest;
 use App\Http\Resources\Product\ProductResource;
 use App\Http\Resources\Product\ProductCollection;
 class ProductController extends Controller
 {
+
+
+    public function __construct(){
+
+        return $this->middleware('auth:api')->except('index','show');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -27,16 +35,22 @@ class ProductController extends Controller
         return new ProductResource($product);
     }
 
-    public function store(Request $request)
+    public function store(ProductRequest $request)
     {
-        //
+
+        $product = Product::create($request->all());
+        return apiResponse(1,'Good Data',['data' => new ProductResource($product)],201);
+       // return response()->json(['data' => new ProductResource($product)],201);
+       // return response()->json(['data' => new ProductResource($product)],Response::HTTP_CREATED);
     }
 
     
 
-    public function update(Request $request, Product $product)
+    public function update(ProductRequest $request,Product $product)
     {
-        //
+       $product->update($request->all());
+       return apiResponse(1,'Updated',['data' => new ProductResource($product)],201);
+
     }
 
     /**
@@ -47,6 +61,8 @@ class ProductController extends Controller
      */
     public function destroy(Product $product)
     {
-        //
+        $product->delete();
+        return apiResponse(1,'Deleted-Data');
+
     }
 }

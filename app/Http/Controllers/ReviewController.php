@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Review;
+
 use Illuminate\Http\Request;
+use App\Http\Requests\ReviewRequest;
 use App\Http\Resources\Review\ReviewResource;
 use App\Product;
+use App\Review;
 class ReviewController extends Controller
 {
     /**
@@ -18,56 +20,26 @@ class ReviewController extends Controller
         return ReviewResource::collection($product->reviews);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(ReviewRequest $request,Product $product)
+    {
+
+        $review = Review::create($request->all());
+        $product->reviews()->save($review);
+
+        return apiResponse(1,'Good Review',
+            [ 'data' => new ReviewResource($review)],201
+        );
+        
+    }
+
+    
+    public function show(Request $review)
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Review  $review
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Review $review)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Review  $review
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Review $review)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Review  $review
-     * @return \Illuminate\Http\Response
-     */
+    
+    
     public function update(Request $request, Review $review)
     {
         //
